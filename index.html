@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0d0b0a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>غسق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" />
+</head>
+<body data-screen="boot">
+  <canvas id="game" aria-label="ساحة المعركة ثلاثية الأبعاد"></canvas>
+  <div id="hurt"></div>
+  <div id="screenBlood"></div>
+
+  <!-- ===== overlays that belong to the view ===== -->
+  <div id="scope" hidden>
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><mask id="scopeHole"><rect width="1000" height="1000" fill="#fff" /><circle cx="500" cy="500" r="330" fill="#000" /></mask></defs>
+      <rect width="1000" height="1000" fill="#050505" mask="url(#scopeHole)" />
+      <circle cx="500" cy="500" r="330" fill="none" stroke="#000" stroke-width="18" />
+      <g stroke="#0a0a0a" stroke-width="2.2">
+        <line x1="170" y1="500" x2="470" y2="500" /><line x1="530" y1="500" x2="830" y2="500" />
+        <line x1="500" y1="170" x2="500" y2="470" /><line x1="500" y1="530" x2="500" y2="830" />
+      </g>
+      <g stroke="#0a0a0a" stroke-width="5"><line x1="170" y1="500" x2="330" y2="500" /><line x1="670" y1="500" x2="830" y2="500" /><line x1="500" y1="670" x2="500" y2="830" /></g>
+      <g fill="#0a0a0a"><circle cx="500" cy="540" r="3" /><circle cx="500" cy="580" r="3" /><circle cx="500" cy="620" r="3" /><circle cx="460" cy="500" r="3" /><circle cx="540" cy="500" r="3" /><circle cx="420" cy="500" r="3" /><circle cx="580" cy="500" r="3" /></g>
+      <circle cx="500" cy="500" r="2.5" fill="#ff3b2e" />
+    </svg>
+  </div>
+  <div id="binoc" hidden>
+    <div class="bn-frame"></div>
+    <div class="bn-read"><span class="bn-k">منظار التحديد</span><b id="binocDist">—</b><span id="binocWarn" class="bn-warn" hidden>خطر: الهدف قريب جداً منك</span></div>
+    <div class="bn-help">انقر للتأكيد · الزر الأيمن للإلغاء</div>
+  </div>
+
+  <!-- ===== HUD ===== -->
+  <div id="hud" dir="ltr" hidden>
+    <div class="hud-tl">
+      <span id="rankMini"></span>
+      <div class="tl-nums" dir="rtl">
+        <span class="tl-row"><em>النقاط</em><b id="scoreNum">0</b></span>
+        <span class="tl-row sp"><em>نقاط الإسناد</em><b id="spNum">0</b></span>
+      </div>
+    </div>
+    <div class="hud-top">
+      <canvas id="compass" width="880" height="76" aria-hidden="true"></canvas>
+      <div class="clockline" dir="rtl"><span id="clock">16:00</span><span class="pill" id="waveInfo"></span></div>
+      <span id="zoneName" class="zone-name" dir="rtl"></span>
+      <div id="boss" dir="rtl" hidden><span class="boss-name">مروحية معادية</span><span class="boss-bar"><i id="bossBar"></i></span></div>
+    </div>
+    <div id="feed" dir="rtl"></div>
+    <div id="xh" data-style="cross"><i class="h l"></i><i class="h r"></i><i class="v u"></i><i class="v d"></i><i class="dot"></i><i class="ring"></i></div>
+    <div id="hit"><i></i><i></i><i></i><i></i></div>
+    <svg id="reloadRing" class="ring-ui" viewBox="0 0 46 46" hidden><circle id="reloadArc" cx="23" cy="23" r="20" /></svg>
+    <svg id="cookRing" class="ring-ui cook" viewBox="0 0 46 46" hidden><circle id="cookArc" cx="23" cy="23" r="20" /></svg>
+    <div id="dmg"></div>
+    <div id="nadeWarn" hidden><span class="nw-arrow"></span><span class="nw-ico">!</span></div>
+    <div id="markers"></div>
+    <div id="msg" dir="rtl"></div>
+    <div id="pop" dir="rtl"></div>
+    <div id="hint" dir="rtl"></div>
+    <div id="prompt" dir="rtl" hidden></div>
+    <div id="xpPops" dir="rtl"></div>
+    <div class="hud-bl">
+      <canvas id="ecg" width="420" height="68" aria-hidden="true"></canvas>
+      <div class="vital hp">
+        <svg viewBox="0 0 20 20"><path d="M7 1h6v6h6v6h-6v6H7v-6H1V7h6z" /></svg>
+        <span class="num" id="hpNum">100</span><span class="bar seg"><i id="hpBar"></i></span>
+      </div>
+      <div class="vital armor">
+        <svg viewBox="0 0 20 20"><path d="M10 1l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V4z" /></svg>
+        <span class="num" id="arNum">50</span><span class="bar"><i id="arBar"></i></span>
+      </div>
+      <div id="stamina"><i id="stBar"></i></div>
+    </div>
+    <div class="hud-br">
+      <div class="focus" id="focusBox" dir="rtl"><span>تركيز</span><kbd>Q</kbd><span class="fbar"><i id="focusBar"></i></span></div>
+      <div id="wList" class="wlist" dir="ltr"></div>
+      <div class="wpanel">
+        <span id="weaponIcon"></span>
+        <div class="w-lines" dir="rtl"><b id="wName"></b><em id="wMode"></em></div>
+      </div>
+      <div id="rounds"></div>
+      <div class="ammo"><span id="mag">30</span><span id="reserve">/ 120</span><span class="nades" id="nades"></span></div>
+    </div>
+    <div id="supportBar" dir="rtl"></div>
+    <div id="killedBy" dir="rtl" hidden><span class="kb-k">سقطتَ في المعركة</span><span class="kb-by">قتلك</span><b id="kbName"></b><span id="kbInfo"></span></div>
+  </div>
+  <div id="banner" dir="rtl"><span id="bTime">16:00</span><span id="bTitle"></span><span id="bSub"></span></div>
+  <div id="tacmap" hidden>
+    <div class="tm-box">
+      <span class="tm-title" id="tmTitle">الخريطة التكتيكية</span>
+      <canvas id="tacCanvas" width="600" height="600"></canvas>
+      <div class="tm-legend"><span class="lg you">أنت</span><span class="lg ally">الرفاق</span><span class="lg foe">غازٍ مرصود</span><span class="lg sniper">عش قنّاص</span><span class="lg sup">إمداد</span></div>
+    </div>
+  </div>
+  <div id="radio" dir="rtl"><span class="r-who"></span><span class="r-text"></span></div>
+  <div id="speech" dir="rtl"><span class="sp-who"></span><span class="sp-text"></span></div>
+  <div id="medalToast" dir="rtl"></div>
+
+  <!-- ===== touch controls ===== -->
+  <div id="touch">
+    <div id="tZoneL"></div>
+    <div id="tZoneR"></div>
+    <div id="tStick"><i id="tKnob"></i></div>
+    <div id="tBtns" dir="ltr">
+      <button type="button" class="tb pause" data-t="pause" aria-label="إيقاف مؤقت">II</button>
+      <button type="button" class="tb map" data-t="map" aria-label="الخريطة">خريطة</button>
+      <button type="button" class="tb support" data-t="support" aria-label="الإسناد">إسناد</button>
+      <button type="button" class="tb fire2" data-t="fire" aria-label="إطلاق">إطلاق</button>
+      <button type="button" class="tb fire" data-t="fire" aria-label="إطلاق">إطلاق</button>
+      <button type="button" class="tb aim" data-t="aim" aria-label="تصويب">تصويب</button>
+      <button type="button" class="tb jump" data-t="jump" aria-label="قفز">قفز</button>
+      <button type="button" class="tb crouch" data-t="crouch" aria-label="انحناء">انحناء</button>
+      <button type="button" class="tb reload" data-t="reload" aria-label="تعبئة">تعبئة</button>
+      <button type="button" class="tb swap" data-t="swap" aria-label="تبديل السلاح">تبديل</button>
+      <button type="button" class="tb nade" data-t="nade" aria-label="قنبلة">قنبلة</button>
+      <button type="button" class="tb focusb" data-t="focus" aria-label="تركيز">تركيز</button>
+      <button type="button" class="tb melee" data-t="melee" aria-label="سكين">سكين</button>
+      <button type="button" class="tb use" data-t="use" aria-label="أخذ">أخذ</button>
+    </div>
+    <div id="tSupport" dir="rtl" hidden></div>
+  </div>
+
+  <!-- ===== screens ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="emSun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe7bf" /><stop offset=".45" stop-color="#ffab5e" /><stop offset=".8" stop-color="#e2553a" /><stop offset="1" stop-color="#8e2a33" /></linearGradient>
+      <mask id="emCut"><rect width="100" height="100" fill="#fff" /><rect y="57" width="100" height="1.6" fill="#000" /><rect y="62" width="100" height="2.4" fill="#000" /><rect y="67.5" width="100" height="3.4" fill="#000" /><rect y="73" width="100" height="30" fill="#000" /></mask>
+    </defs>
+    <symbol id="emblem" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="1" />
+      <circle cx="50" cy="50" r="42.5" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="3" stroke-dasharray="0.8 3.65" />
+      <circle cx="50" cy="52" r="24" fill="url(#emSun)" mask="url(#emCut)" />
+      <path d="M16 75h68" stroke="#ff8a3d" stroke-width="2.2" />
+      <path d="M26 80.5h48M36 85.5h28" stroke="currentColor" stroke-opacity=".5" stroke-width="1.4" />
+      <path d="M50 12.5l1.9 4.1 4.5.5-3.4 3 1 4.4-4-2.3-4 2.3 1-4.4-3.4-3 4.5-.5z" fill="#ffb36b" />
+    </symbol>
+  </svg>
+  <canvas id="menuFx" aria-hidden="true"></canvas>
+  <div id="menuVeil" aria-hidden="true"></div>
+
+  <section id="boot" class="screen center">
+    <div class="boot-box">
+      <svg class="emblem boot-emblem" aria-hidden="true"><use href="#emblem" /></svg>
+      <span class="logo small" data-text="غَسَق">غَسَق</span>
+      <div class="boot-meter">
+        <span class="boot-bar"><i id="bootBar"></i></span>
+        <span class="boot-read"><span id="bootStep" class="boot-step">جارٍ التحميل…</span><b id="bootPct">0%</b></span>
+      </div>
+      <div class="boot-tipbox"><span class="k">معلومة ميدانية</span><p id="bootTip" class="boot-tip"></p></div>
+    </div>
+  </section>
+
+  <section id="splash" class="screen" hidden>
+    <i class="letterbox top"></i><i class="letterbox bottom"></i>
+    <div class="splash-box">
+      <svg class="emblem splash-emblem" aria-hidden="true"><use href="#emblem" /></svg>
+      <h1 class="logo" data-text="غَسَق">غَسَق</h1>
+      <span class="tagline"><i></i>اصمد حتى منتصف الليل<i></i></span>
+      <span class="press" id="pressLine">اضغط أي زر للبدء</span>
+    </div>
+    <span class="splash-foot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="1.8" /><rect x="3" y="13" width="4.5" height="7" rx="1.5" fill="currentColor" /><rect x="16.5" y="13" width="4.5" height="7" rx="1.5" fill="currentColor" /></svg>سمّاعات الرأس تمنحك أفضل تجربة: الأصوات ثلاثية الأبعاد</span>
+  </section>
+
+  <section id="main" class="screen" hidden>
+    <header class="main-top">
+      <div id="profileCard" class="profile"></div>
+    </header>
+    <div class="main-col">
+      <div class="brand">
+        <svg class="emblem brand-emblem" aria-hidden="true"><use href="#emblem" /></svg>
+        <div class="brand-t">
+          <span class="eyebrow" id="mainEyebrow">اصمد حتى منتصف الليل</span>
+          <h1 class="logo" data-text="غَسَق">غَسَق</h1>
+        </div>
+      </div>
+      <nav class="menu" id="mainMenu">
+        <i class="msel" aria-hidden="true"></i>
+        <button type="button" class="mitem nav" data-act="play" data-desc="اختر ساحة المعركة والمهمة والصعوبة ثم انطلق" data-autofocus><em>01</em><b>ابدأ العملية</b></button>
+        <button type="button" class="mitem nav" data-act="loadout" data-desc="الأسلحة الأساسية وطلاءاتها"><em>02</em><b>العتاد</b></button>
+        <button type="button" class="mitem nav" data-act="guide" data-desc="كيف تلعب وأزرار التحكم"><em>03</em><b>دليل اللعب</b></button>
+        <button type="button" class="mitem nav" data-act="record" data-desc="الرتبة والأوسمة وأفضل النتائج"><em>04</em><b>السجل العسكري</b></button>
+        <button type="button" class="mitem nav" data-act="settings" data-desc="الرسوميات والتحكم والصوت"><em>05</em><b>الإعدادات</b></button>
+        <button type="button" class="mitem nav" data-act="exit" data-desc="أغلق اللعبة وعُد إلى سطح المكتب" id="exitItem" hidden><em>06</em><b>خروج</b></button>
+      </nav>
+      <p id="menuDesc" class="menu-desc">اختر ساحة المعركة والمهمة والصعوبة ثم انطلق</p>
+    </div>
+    <aside class="main-side">
+      <div id="dailyCard" class="orders"></div>
+      <p id="mainTip" class="radio-tip"></p>
+    </aside>
+    <footer class="main-foot">
+      <span class="keys"><kbd>↑</kbd><kbd>↓</kbd> تنقّل <kbd>Enter</kbd> اختيار</span>
+      <span class="version">الإصدار ٢٫٢</span>
+    </footer>
+  </section>
+
+  <section id="brief" class="screen page" data-tab="mission" hidden>
+    <header class="page-head">
+      <div class="ph-title"><span class="eyebrow">قبل الانطلاق</span><h2>إحاطة العملية</h2></div>
+      <div id="briefTabs" class="tabs steps">
+        <button type="button" class="tab nav" data-btab="mission" aria-pressed="true"><em>١</em>المهمة</button>
+        <button type="button" class="tab nav" data-btab="gear" aria-pressed="false"><em>٢</em>العتاد</button>
+      </div>
+    </header>
+    <div class="page-body brief-body">
+      <div class="brief-main">
+        <div id="bMission" class="bpane">
+          <h3>ساحة المعركة</h3>
+          <div id="mapList" class="maps"></div>
+          <h3>المهمة</h3>
+          <div id="opsList" class="ops"></div>
+          <h3>الصعوبة</h3>
+          <div id="diffList" class="diffs"></div>
+          <p id="diffNote" class="diff-note"></p>
+          <h3>معلومات استخباراتية</h3>
+          <p id="mapIntel" class="intel"></p>
+        </div>
+        <div id="bGear" class="bpane" hidden>
+          <h3>السلاح الأساسي</h3>
+          <div id="weaponList" class="weapons"></div>
+          <h3>طلاء السلاح <small>يظهر على سلاحك في يدك</small></h3>
+          <div id="skinList" class="skins"></div>
+        </div>
+      </div>
+      <aside class="brief-side">
+        <div id="briefMapWrap" class="viewport map-view">
+          <div id="briefMarks" class="marks" aria-hidden="true"></div>
+          <div class="vf" aria-hidden="true"><i class="vf-c"></i><i class="vf-r top"></i><i class="vf-r side"></i></div>
+          <div class="vf-top"><span class="live"><i></i>بث مباشر · استطلاع جوي</span><span class="vf-read" id="vfRead"></span></div>
+          <div class="view-cap">
+            <span class="eyebrow">ساحة المعركة</span>
+            <b id="mapTitle"></b>
+            <p id="mapNote" class="map-note"></p>
+            <span id="mapChips" class="chips"></span>
+          </div>
+          <div class="legend"><span class="lg foe">مداخل الغزاة</span><span class="lg sniper">أعشاش القنص</span><span class="lg you">نقطة انطلاقك</span></div>
+          <div class="map-loading"><span class="ml-noise"></span><b>جارٍ الاستطلاع الجوي…</b><span class="ml-bar"><i></i></span></div>
+        </div>
+        <div id="armoryView" class="viewport arm-view" hidden>
+          <div class="arm-cap">
+            <span class="eyebrow" id="armCls"></span>
+            <b id="armName"></b>
+            <span id="armState" class="arm-state"></span>
+          </div>
+          <div id="armStage" class="arm-stage"></div>
+          <div id="armSpecs" class="arm-specs"></div>
+          <div id="armStats" class="arm-stats"></div>
+          <div class="sidearms"><span class="k">ومعك دائماً</span><span id="sideList" class="side-list"></span></div>
+        </div>
+      </aside>
+    </div>
+    <footer class="page-foot">
+      <button type="button" id="briefBack" class="gbtn ghost nav"><kbd>Esc</kbd>رجوع</button>
+      <span id="briefSummary" class="summary"></span>
+      <button type="button" id="briefStart" class="gbtn deploy nav"><span>انطلق</span><i class="chev" aria-hidden="true"><svg viewBox="0 0 9 16"><path d="M9 0H5L0 8l5 8h4L4 8z"/></svg><svg viewBox="0 0 9 16"><path d="M9 0H5L0 8l5 8h4L4 8z"/></svg><svg viewBox="0 0 9 16"><path d="M9 0H5L0 8l5 8h4L4 8z"/></svg></i></button>
+    </footer>
+  </section>
+
+  <section id="record" class="screen page" hidden>
+    <header class="page-head"><div class="ph-title"><span class="eyebrow">ملفك القتالي</span><h2>السجل العسكري</h2></div></header>
+    <div class="page-body rec-grid">
+      <div class="rec-col">
+        <div id="recRank" class="rec-rank"></div>
+        <div id="recStats" class="readouts"></div>
+        <h3>أفضل النتائج</h3>
+        <div id="boardTabs" class="seg"><button type="button" class="nav" data-tab="dusk">عملية الغسق</button><button type="button" class="nav" data-tab="dawn">حتى الفجر</button></div>
+        <div id="recBoard" class="board"></div>
+      </div>
+      <div class="rec-col">
+        <h3>الأوسمة <small id="medalCount"></small></h3>
+        <div id="recMedals" class="medals"></div>
+      </div>
+    </div>
+    <footer class="page-foot"><button type="button" id="recBack" class="gbtn ghost nav"><kbd>Esc</kbd>رجوع</button></footer>
+  </section>
+
+  <section id="settings" class="screen page" hidden>
+    <header class="page-head">
+      <div class="ph-title"><span class="eyebrow">خصّص تجربتك</span><h2>الإعدادات</h2></div>
+      <div id="setTabs" class="tabs"></div>
+    </header>
+    <div class="page-body set-body">
+      <div id="setFields" class="fields"></div>
+      <aside class="set-info brk"><span class="eyebrow" id="setInfoTab"></span><b id="setInfoName"></b><p id="setInfoText"></p><span class="set-saved">تُحفظ التغييرات تلقائياً</span></aside>
+    </div>
+    <footer class="page-foot">
+      <button type="button" id="setReset" class="gbtn ghost nav">استعادة الافتراضي</button>
+      <span class="spacer"></span>
+      <button type="button" id="setBack" class="gbtn nav"><kbd>Esc</kbd>تم</button>
+    </footer>
+  </section>
+
+  <section id="controls" class="screen page" hidden>
+    <header class="page-head">
+      <div class="ph-title"><span class="eyebrow">دليل الميدان</span><h2>دليل اللعب</h2></div>
+      <div id="guideTabs" class="tabs">
+        <button type="button" class="tab nav" data-gtab="how" aria-pressed="true">كيف تلعب</button>
+        <button type="button" class="tab nav" data-gtab="keys" aria-pressed="false">التحكم</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div id="howGrid" class="how-grid"></div>
+      <div id="ctlGrid" class="ctl-grid" hidden></div>
+    </div>
+    <footer class="page-foot"><button type="button" id="ctlBack" class="gbtn ghost nav" data-autofocus><kbd>Esc</kbd>رجوع</button></footer>
+  </section>
+
+  <section id="pause" class="screen" hidden>
+    <div class="pause-box">
+      <span class="eyebrow">استراحة قصيرة</span>
+      <h2>المعركة متوقفة</h2>
+      <span id="pauseMeta" class="meta"></span>
+      <nav class="menu" id="pauseMenu">
+        <i class="msel" aria-hidden="true"></i>
+        <button type="button" id="resumeBtn" class="mitem nav" data-autofocus><em>01</em><b>متابعة</b></button>
+        <button type="button" id="pSetBtn" class="mitem nav"><em>02</em><b>الإعدادات</b></button>
+        <button type="button" id="pCtlBtn" class="mitem nav"><em>03</em><b>دليل اللعب</b></button>
+        <button type="button" id="restartBtn" class="mitem nav"><em>04</em><b>إعادة العملية</b></button>
+        <button type="button" id="quitBtn" class="mitem nav warn"><em>05</em><b>الانسحاب</b><span>تُحتسب نقاطك حتى الآن</span></button>
+      </nav>
+    </div>
+  </section>
+
+  <section id="aar" class="screen page" hidden>
+    <header class="page-head"><div class="ph-title"><span class="eyebrow" id="aarEyebrow">تقرير ما بعد المعركة</span><h2 id="aarTitle"></h2><span id="aarMeta" class="meta"></span></div></header>
+    <div class="page-body aar-grid">
+      <div class="aar-col">
+        <div class="grade-box">
+          <span id="aarGrade" class="grade-stamp">A</span>
+          <div class="grade-side"><span class="k">تقييم العملية</span><span id="aarStars" class="stars big"></span></div>
+        </div>
+        <div id="aarStats" class="readouts"></div>
+        <div id="aarMedals" class="medals row"></div>
+      </div>
+      <div class="aar-col">
+        <h3>الخبرة المكتسبة</h3>
+        <div id="aarLines" class="aar-lines"></div>
+        <div class="aar-total"><span>المجموع</span><b id="aarTotal">0</b></div>
+        <div id="aarRank" class="rec-rank small"></div>
+        <div id="aarUnlocks" class="unlocks"></div>
+        <div id="aarDaily" class="orders inline"></div>
+      </div>
+    </div>
+    <footer class="page-foot">
+      <button type="button" id="aarMenu" class="gbtn ghost nav">القائمة الرئيسية</button>
+      <span class="spacer"></span>
+      <button type="button" id="aarAgain" class="gbtn nav" data-autofocus>عملية جديدة</button>
+    </footer>
+  </section>
+
+  <div id="rotate" hidden><span class="rot-ico"></span><b>أدِر هاتفك أفقياً</b><span>اللعبة مصممة للوضع الأفقي</span></div>
+  <div id="fps" hidden></div>
+  <div id="err" hidden></div>
+  <script>
+    (function () {
+      function show(msg) { var el = document.getElementById('err'); if (!el) return; el.hidden = false; el.textContent += msg + '\n'; }
+      window.addEventListener('error', function (e) { show('Error: ' + (e.message || e.type) + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '')); });
+      window.addEventListener('unhandledrejection', function (e) { show('Promise: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason)); });
+    })();
+  </script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

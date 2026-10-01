@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- App icon (exe and apk): the game's emblem, a sun setting behind horizon lines, on a dusk tile -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+      <stop offset="0" stop-color="#3a2216" />
+      <stop offset=".55" stop-color="#1a110c" />
+      <stop offset="1" stop-color="#0b0908" />
+    </radialGradient>
+    <linearGradient id="emSun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe7bf" /><stop offset=".45" stop-color="#ffab5e" /><stop offset=".8" stop-color="#e2553a" /><stop offset="1" stop-color="#8e2a33" />
+    </linearGradient>
+    <mask id="emCut">
+      <rect width="100" height="100" fill="#fff" />
+      <rect y="57" width="100" height="1.6" fill="#000" /><rect y="62" width="100" height="2.4" fill="#000" />
+      <rect y="67.5" width="100" height="3.4" fill="#000" /><rect y="73" width="100" height="30" fill="#000" />
+    </mask>
+  </defs>
+  <rect width="1024" height="1024" rx="200" fill="url(#bg)" />
+  <g transform="translate(102 92) scale(8.2)" color="#ffdcae">
+    <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="1" />
+    <circle cx="50" cy="50" r="42.5" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="3" stroke-dasharray="0.8 3.65" />
+    <circle cx="50" cy="52" r="24" fill="url(#emSun)" mask="url(#emCut)" />
+    <path d="M16 75h68" stroke="#ff8a3d" stroke-width="2.2" />
+    <path d="M26 80.5h48M36 85.5h28" stroke="currentColor" stroke-opacity=".5" stroke-width="1.4" />
+    <path d="M50 12.5l1.9 4.1 4.5.5-3.4 3 1 4.4-4-2.3-4 2.3 1-4.4-3.4-3 4.5-.5z" fill="#ffb36b" />
+  </g>
+</svg>

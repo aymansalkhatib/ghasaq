@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Release signing: android/keystore.properties (kept out of git) points at the release keystore.
+// Keep both files safe: an update to the installed app must be signed with the same key.
+def keystoreProps = new Properties()
+def keystoreFile = rootProject.file('keystore.properties')
+if (keystoreFile.exists()) keystoreFile.withInputStream { keystoreProps.load(it) }
+
+android {
+    namespace 'com.ghasaq.game'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.ghasaq.game'
+        minSdk 24
+        targetSdk 35
+        versionCode 3
+        versionName '2.2.0'
+    }
+
+    signingConfigs {
+        release {
+            if (keystoreFile.exists()) {
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig keystoreFile.exists() ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

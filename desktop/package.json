@@ -1,0 +1,61 @@
+{
+  "name": "ghasaq-desktop",
+  "productName": "Ghasaq",
+  "version": "2.2.0",
+  "description": "غسق: اصمد حتى منتصف الليل",
+  "author": "Ghasaq",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "build": {
+    "appId": "com.ghasaq.game",
+    "productName": "Ghasaq",
+    "copyright": "© 2026 Ghasaq",
+    "files": [
+      "main.js",
+      "preload.js",
+      "app/**/*"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "electronDist": "node_modules/electron/dist",
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false
+    },
+    "electronLanguages": [
+      "ar",
+      "en-US"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "artifactName": "Ghasaq-${version}-Setup.${ext}",
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "غسق",
+      "uninstallDisplayName": "غسق"
+    },
+    "portable": {
+      "artifactName": "Ghasaq-${version}-Portable.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3"
+  }
+}

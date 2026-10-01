@@ -1,0 +1,197 @@
+/* Design tokens, reset and shared components. One committed look: a dusk battlefield seen
+   through a military display. Warm sand ink on smoked glass, ember as the only accent,
+   corner brackets, tick rulers and hairlines instead of web cards. */
+:root {
+  color-scheme: dark;
+  --ground: #0b0908;
+  --ink: #f5ede0;
+  --ink-2: #d5c8b3;
+  --dim: #9a8d78;
+  --mute: #6b6152;
+  --ember: #ff8a3d;
+  --ember-2: #ffb36b;
+  --ember-3: #ffdcae;
+  --blood: #e0453a;
+  --ally: #7fe0a0;
+  --gold: #e9c46a;
+  --glass: rgba(16, 13, 11, .68);
+  --glass-2: rgba(12, 10, 9, .9);
+  --edge: rgba(255, 228, 190, .12);
+  --edge-2: rgba(255, 228, 190, .28);
+  --edge-3: rgba(255, 228, 190, .5);
+  --f-display: "Changa", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --f-num: "Oswald", "Changa", "Arial Narrow", sans-serif;
+  --f-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --gut: max(16px, 2.6vw);
+  --hud-scale: 1;
+  --cut: 12px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; overflow: hidden; background: var(--ground); color: var(--ink); }
+body { font-family: var(--f-body); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; touch-action: none; }
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+button { font: inherit; color: inherit; }
+kbd {
+  display: inline-flex; align-items: center; justify-content: center; direction: ltr;
+  min-width: 22px; height: 22px; padding: 0 5px;
+  font-family: var(--f-num); font-size: 12px; font-weight: 500; color: var(--ink);
+  border: 1px solid var(--edge-2); border-bottom-width: 3px; border-radius: 3px; background: rgba(255, 255, 255, .05);
+}
+body.touch kbd.hint, body.touch .keys, body.touch .gbtn kbd { display: none; }
+
+/* corner brackets: any element with .brk draws four L-shaped corners on top of its --bg */
+.brk {
+  --bc: var(--edge-3); --bl: 10px; --bw: 1.5px; --bg: transparent;
+  background:
+    linear-gradient(var(--bc) 0 0) top left / var(--bl) var(--bw), linear-gradient(var(--bc) 0 0) top left / var(--bw) var(--bl),
+    linear-gradient(var(--bc) 0 0) top right / var(--bl) var(--bw), linear-gradient(var(--bc) 0 0) top right / var(--bw) var(--bl),
+    linear-gradient(var(--bc) 0 0) bottom left / var(--bl) var(--bw), linear-gradient(var(--bc) 0 0) bottom left / var(--bw) var(--bl),
+    linear-gradient(var(--bc) 0 0) bottom right / var(--bl) var(--bw), linear-gradient(var(--bc) 0 0) bottom right / var(--bw) var(--bl),
+    var(--bg);
+  background-repeat: no-repeat;
+}
+
+/* Arabic eyebrow: no letter-spacing (it would break the joined letters), an ember rule instead */
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-display); font-size: 14px; font-weight: 600; color: var(--ember-2); }
+.eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--ember); box-shadow: 0 0 8px var(--ember); }
+
+/* the title: a sunset gradient with a hard shadow echo and a slow light sweep */
+.logo {
+  position: relative; margin: 0; font-family: var(--f-display); font-weight: 800; line-height: .95; font-size: clamp(88px, 14vw, 200px);
+  background: linear-gradient(100deg, transparent 0 42%, rgba(255, 250, 235, .95) 50%, transparent 58% 100%) 200% 0 / 250% 100% no-repeat,
+    linear-gradient(180deg, #fff0d2 0%, #ffbf78 34%, #ff7a36 60%, #b8323a 88%, #6e1f2c 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 6px 30px rgba(255, 110, 40, .38));
+  animation: sweep 7s ease-in-out 1.2s infinite;
+}
+@keyframes sweep { 0%, 70% { background-position: 200% 0, 0 0; } 100% { background-position: -120% 0, 0 0; } }
+.logo.small { font-size: 72px; }
+.emblem { display: block; width: 64px; height: 64px; color: var(--ember-3); overflow: visible; }
+
+/* ---------- angled game button: the clipped plate lives on ::before so the glow is not clipped ---------- */
+.gbtn {
+  position: relative; isolation: isolate; border: 0; background: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px;
+  font-family: var(--f-display); font-weight: 700; font-size: 19px; color: #1a0d05; white-space: nowrap;
+  padding: 0 30px; transition: transform .16s var(--ease), filter .2s ease;
+  filter: drop-shadow(0 6px 16px rgba(255, 120, 40, .32));
+}
+.gbtn::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: repeating-linear-gradient(-60deg, rgba(255, 255, 255, .0) 0 10px, rgba(255, 255, 255, .09) 10px 12px), linear-gradient(180deg, #ffc68c, #ff8a3d 55%, #f0692a);
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+.gbtn::after { /* light sweep on hover */
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%) -150% 0 / 200% 100% no-repeat;
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+.gbtn:hover, .gbtn:focus-visible, .gbtn:focus { transform: translateY(-2px); filter: drop-shadow(0 8px 22px rgba(255, 120, 40, .6)) brightness(1.06); outline: none; }
+.gbtn:hover::after, .gbtn:focus::after { opacity: 1; animation: btnSweep .7s var(--ease) forwards; }
+@keyframes btnSweep { to { background-position: 150% 0; } }
+.gbtn:active { transform: translateY(1px) scale(.98); }
+.gbtn kbd { height: 20px; min-width: 20px; font-size: 11px; color: inherit; border-color: currentColor; opacity: .7; background: none; }
+.gbtn.ghost { color: var(--ink); filter: none; }
+.gbtn.ghost::before { background: linear-gradient(180deg, rgba(255, 240, 220, .09), rgba(255, 240, 220, .03)); box-shadow: inset 0 0 0 1px var(--edge-2); }
+.gbtn.ghost:hover, .gbtn.ghost:focus { filter: drop-shadow(0 0 12px rgba(255, 180, 110, .25)); color: #fff; }
+.gbtn.ghost:hover::before, .gbtn.ghost:focus::before { box-shadow: inset 0 0 0 1px var(--ember-2); background: linear-gradient(180deg, rgba(255, 150, 80, .2), rgba(255, 150, 80, .06)); }
+
+/* ---------- screens ---------- */
+.screen {
+  position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; overflow-y: auto;
+  padding-inline: calc(var(--gut) + env(safe-area-inset-right, 0px)) calc(var(--gut) + env(safe-area-inset-left, 0px));
+  padding-block: calc(env(safe-area-inset-top, 0px) + 20px) calc(env(safe-area-inset-bottom, 0px) + 18px);
+}
+.screen::after { /* faint scanlines and a lens vignette tie every menu to the same display */
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .06) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0, 0, 0, .55) 100%);
+}
+.screen.center { align-items: center; justify-content: center; }
+
+/* ember and dust layer drawn by src/ui/menufx.js, under the menus and over the 3D view */
+#menuFx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 19; pointer-events: none; }
+body[data-screen="boot"] #menuFx { z-index: 41; }
+body.playing #menuFx { display: none; }
+/* a short black dip that hides the camera cut when the world is rebuilt */
+#menuVeil { position: fixed; inset: 0; z-index: 18; pointer-events: none; background: #000; opacity: 0; transition: opacity .5s ease; }
+#menuVeil.on { opacity: 1; transition-duration: .12s; }
+
+/* ---------- boot ---------- */
+#boot {
+  z-index: 40;
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(120, 52, 24, .35), transparent 70%),
+    radial-gradient(140% 100% at 50% 100%, #1b120d, var(--ground) 70%);
+}
+.boot-box { display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(460px, 88vw); text-align: center; }
+.boot-emblem { width: 76px; height: 76px; animation: embPulse 2.4s ease-in-out infinite; }
+@keyframes embPulse { 50% { filter: drop-shadow(0 0 14px rgba(255, 138, 61, .55)); } }
+.boot-meter { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.boot-bar { position: relative; display: block; width: 100%; height: 8px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px var(--edge); overflow: hidden; }
+.boot-bar i {
+  position: absolute; inset: 2px; display: block; transform-origin: right; transform: scaleX(0); transition: transform .35s var(--ease);
+  background: linear-gradient(270deg, var(--ember), var(--ember-2));
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px); mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px);
+  box-shadow: 0 0 12px var(--ember);
+}
+.boot-read { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.boot-step { font-family: var(--f-display); font-size: 14px; color: var(--ink-2); }
+.boot-read b { font: 600 15px var(--f-num); color: var(--ember-2); direction: ltr; }
+.boot-tipbox { position: relative; margin-top: 18px; padding: 12px 16px; border-top: 1px solid var(--edge); width: 100%; }
+.boot-tipbox .k { display: block; font: 600 12px var(--f-display); color: var(--ember-2); margin-bottom: 4px; }
+.boot-tip { margin: 0; color: var(--dim); font-size: 14px; line-height: 1.8; }
+
+/* ---------- splash: a title card over the living battlefield ---------- */
+#splash { align-items: center; justify-content: center; cursor: pointer; background: radial-gradient(70% 60% at 50% 48%, rgba(11, 9, 8, .1), rgba(11, 9, 8, .78)); }
+.letterbox { position: fixed; left: 0; right: 0; height: 9vh; background: #050404; z-index: 1; animation: lbIn 1.1s var(--ease) backwards; }
+.letterbox.top { top: 0; box-shadow: 0 1px 0 rgba(255, 138, 61, .25); }
+.letterbox.bottom { bottom: 0; box-shadow: 0 -1px 0 rgba(255, 138, 61, .25); }
+@keyframes lbIn { from { transform: scaleY(2.4); } }
+.letterbox.top { transform-origin: top; } .letterbox.bottom { transform-origin: bottom; }
+.splash-box { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.splash-emblem { width: 84px; height: 84px; margin-bottom: 4px; animation: fadeUp 1.2s var(--ease) .2s backwards; }
+#splash .logo { font-size: clamp(96px, 17vw, 230px); animation: logoIn 1.4s var(--ease) .1s backwards, sweep 7s ease-in-out 2s infinite; }
+@keyframes logoIn { from { opacity: 0; letter-spacing: 0; transform: scale(1.12); filter: blur(10px) drop-shadow(0 6px 30px rgba(255, 110, 40, 0)); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
+.tagline { display: inline-flex; align-items: center; gap: 14px; font: 600 clamp(15px, 1.6vw, 20px) var(--f-display); color: var(--ink-2); animation: fadeUp 1s var(--ease) .7s backwards; }
+.tagline i { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, var(--ember-2)); }
+.tagline i:last-child { transform: scaleX(-1); }
+.press {
+  position: relative; margin-top: 30px; padding: 10px 34px; font-family: var(--f-display); font-weight: 600; font-size: 18px; color: var(--ink);
+  animation: fadeUp 1s var(--ease) 1.1s backwards, blink 2s ease-in-out 2s infinite;
+}
+.press::before, .press::after { content: ""; position: absolute; top: 0; bottom: 0; width: 12px; border: 1.5px solid var(--ember-2); }
+.press::before { right: 0; border-left: 0; } .press::after { left: 0; border-right: 0; }
+@keyframes blink { 50% { opacity: .4; } }
+.splash-foot {
+  position: absolute; z-index: 2; bottom: calc(env(safe-area-inset-bottom, 0px) + 9vh + 12px); display: inline-flex; align-items: center; gap: 8px;
+  color: var(--dim); font-size: 13px; animation: fadeUp 1s var(--ease) 1.4s backwards;
+}
+.splash-foot svg { width: 18px; height: 18px; color: var(--ember-2); }
+
+#rotate { position: fixed; inset: 0; z-index: 90; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: var(--ground); text-align: center; padding: 24px; }
+#rotate b { font-family: var(--f-display); font-size: 24px; }
+#rotate span { color: var(--dim); }
+.rot-ico { width: 64px; height: 40px; border: 3px solid var(--ember-2); border-radius: 8px; animation: rot 2s ease-in-out infinite; }
+@keyframes rot { 0%, 30% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0); } }
+
+#fps { position: fixed; z-index: 60; left: 8px; bottom: 6px; font: 600 12px var(--f-num); color: #9be38a; direction: ltr; }
+#err { position: fixed; z-index: 99; left: 16px; right: 16px; bottom: 16px; max-height: 40vh; overflow: auto; padding: 12px 14px; background: #2a0a08; border: 1px solid #ff5a4a; color: #ffd9d4; font: 12px/1.6 ui-monospace, monospace; direction: ltr; white-space: pre-wrap; user-select: text; }
+
+@media (max-height: 460px) {
+  .letterbox { height: 7vh; }
+  #splash .logo { font-size: 104px; }
+  .splash-emblem { width: 56px; height: 56px; }
+  .press { margin-top: 14px; font-size: 16px; }
+  .splash-foot { bottom: calc(env(safe-area-inset-bottom, 0px) + 7vh + 6px); font-size: 12px; }
+  .boot-emblem { width: 56px; height: 56px; }
+  .boot-box { gap: 8px; }
+  .boot-tipbox { margin-top: 6px; padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .press, .rot-ico, .logo, .boot-emblem, #splash .logo { animation: none; }
+}

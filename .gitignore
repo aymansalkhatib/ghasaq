@@ -1,0 +1,21 @@
+node_modules/
+dist/
+dist-*/
+*.log
+.DS_Store
+
+# app builds (generated)
+release/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/index.html
+desktop/node_modules/
+desktop/dist/
+desktop/app/
+desktop/build/
+
+# APK signing key: keep a private backup, never commit it
+android/keystore/
+android/keystore.properties
