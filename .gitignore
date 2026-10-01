@@ -19,3 +19,8 @@ desktop/build/
 # APK signing key: keep a private backup, never commit it
 android/keystore/
 android/keystore.properties
+
+# documentary takes and renders (generated)
+documentary/out/
+documentary/out-dry/
+documentary/*.mp4
