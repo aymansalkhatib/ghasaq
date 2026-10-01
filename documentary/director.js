@@ -218,9 +218,9 @@ composer.render = (...a) => {
 };
 function shot(fn, opts = {}) {
   cine.fn = fn; cine.t0 = now(); cine.thinFog = opts.thinFog ?? 1; cine.hideHud = opts.hideHud ?? true;
-  $('hud').style.visibility = cine.hideHud ? 'hidden' : '';
+  for (const id of ['hud', 'radio', 'hint']) if ($(id)) $(id).style.visibility = cine.hideHud ? 'hidden' : '';
 }
-const endShot = () => { cine.fn = null; $('hud').style.visibility = ''; };
+const endShot = () => { cine.fn = null; for (const id of ['hud', 'radio', 'hint']) if ($(id)) $(id).style.visibility = ''; };
 /** A slow orbit: centre c, radius r, height h, start angle a0, angular speed w (rad/s). */
 const orbit = (c, r, h, a0, w, lookY = 0, fov = 42) => (t) => {
   const a = a0 + w * t;
@@ -628,7 +628,7 @@ SCENES.E = async () => {
   black(1, 0.5);
   await wait(0.6);
   // a crane shot from the forecourt: rising over the tracks to the clock tower
-  shot(dolly(V(0.5, 1.8, 10.5), V(0, 13, 14), V(0, 5, -14), V(0, 7.5, -14), 10, 52), { thinFog: 0.8 });
+  shot(dolly(V(-1.5, 4, 11), V(0, 13, 14), V(0, 5, -14), V(0, 7.5, -14), 10, 52), { thinFog: 0.8 });
   black(0, 0.6);
   await wait(10);
   finish();
