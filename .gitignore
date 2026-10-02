@@ -24,3 +24,4 @@ android/keystore.properties
 documentary/out/
 documentary/out-dry/
 documentary/*.mp4
+documentary/parts/
