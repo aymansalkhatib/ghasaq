@@ -1,0 +1,144 @@
+<title>غسق · الفيلم التوثيقي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: one dusk-dark column, the film's own title treatment on top, the player, then a single save action. Single dark look by choice (it is a film page). */
+:root {
+  color-scheme: dark;
+  --ground: #0b0908;
+  --panel: #161210;
+  --ink: #f5ede0;
+  --dim: #a8997f;
+  --ember: #ff8a3d;
+  --ember-2: #ffb36b;
+  --edge: rgba(255, 228, 190, .14);
+  --f-display: "Changa", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+body { background: var(--ground); color: var(--ink); font: 16px/1.75 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 22px; direction: rtl; }
+.eb { font: 600 14px var(--f-display); color: var(--ember-2); display: inline-flex; align-items: center; gap: 10px; }
+.eb::before { content: ""; width: 26px; height: 2px; background: var(--ember); }
+h1 { margin: 0; font: 800 clamp(56px, 12vw, 104px)/1.25 var(--f-display); text-wrap: balance;
+  background: linear-gradient(180deg, #fff0d2, #ffbf78 34%, #ff7a36 62%, #b8323a 92%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { margin: 0; max-width: 62ch; color: var(--dim); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.meta li { font: 500 13px var(--f-body); padding: 3px 12px; border: 1px solid var(--edge); color: var(--ink); font-variant-numeric: tabular-nums; }
+.player { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: #000 center / cover no-repeat; border: 1px solid var(--edge); overflow: hidden; }
+.player video { width: 100%; height: 100%; display: block; background: #000; }
+.cover { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(0deg, rgba(11,9,8,.85), rgba(11,9,8,.35)); }
+.box { display: grid; gap: 12px; justify-items: center; text-align: center; padding: 16px; width: min(420px, 100%); }
+button { font: 700 18px var(--f-display); color: #1a0d05; background: linear-gradient(180deg, #ffc68c, var(--ember)); border: 0; padding: 12px 30px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--ember-2); outline-offset: 3px; }
+button:disabled { opacity: .55; cursor: default; }
+button.ghost { color: var(--ink); background: transparent; box-shadow: inset 0 0 0 1px var(--ember-2); }
+.bar { width: 100%; height: 6px; background: rgba(255,255,255,.1); }
+.bar i { display: block; height: 100%; width: 0; background: var(--ember); transition: width .2s; }
+.note { margin: 0; font-size: 14px; color: var(--dim); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.status { font-size: 14px; color: var(--dim); min-width: 0; }
+.chapters { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.chapters li { display: grid; grid-template-columns: 4.5em 1fr; gap: 12px; padding-block: 6px; border-top: 1px solid var(--edge); min-width: 0; }
+.chapters b { font: 600 14px var(--f-display); color: var(--ember-2); font-variant-numeric: tabular-nums; direction: ltr; text-align: right; }
+h2 { margin: 6px 0 0; font: 800 22px var(--f-display); }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+
+<main class="wrap">
+  <header style="display:grid;gap:6px">
+    <span class="eb">فيلم توثيقي</span>
+    <h1>غَسَق</h1>
+    <p class="lede">لعبة تصويب عربية ثلاثية الأبعاد صُنعت كلها بالكود. كل لقطة في الفيلم مسجّلة من داخل اللعبة بصوتها الأصلي، واللعب فيه للاعب آلي.</p>
+    <ul class="meta">
+      <li>٥:٢٥ دقيقة</li><li>1920×1080</li><li>30 إطاراً/ث</li><li>MP4 · H.264 · AAC</li><li>202 MB</li>
+    </ul>
+  </header>
+
+  <div class="player" id="player" style="background-image:url('poster.jpg')">
+    <div class="cover" id="cover">
+      <div class="box">
+        <button type="button" id="load">حمّل الفيلم</button>
+        <div class="bar" id="barWrap" hidden><i id="bar"></i></div>
+        <p class="note" id="loadNote">يُحمَّل الفيلم كاملاً (202 MB) ثم يبدأ العرض.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" id="save" disabled>نزّل الفيلم على جهازك</button>
+    <span class="status" id="status">يصبح التنزيل متاحاً بعد تحميل الفيلم.</span>
+  </div>
+
+  <section style="display:grid;gap:8px">
+    <h2>الفصول</h2>
+    <ol class="chapters">
+      <li><b>0:00</b><span>الافتتاح، والقوائم، والخرائط الثلاث، والعتاد</span></li>
+      <li><b>1:05</b><span>الفصل الأول: الساعة الأولى · ١٦:٠٠</span></li>
+      <li><b>1:28</b><span>الفصل الثاني: الإسناد · الغروب، والإمداد بالمظلة، وبندقية القنص، والرفيق، والتركيز</span></li>
+      <li><b>2:30</b><span>الفصل الثالث: حين يحلّ الليل · المروحية والغارة الجوية</span></li>
+      <li><b>3:12</b><span>الفصل الرابع: ساحات أخرى · القرية المهجورة والعاصفة، ومحطة الوادي</span></li>
+      <li><b>4:03</b><span>الفصل الخامس: صُنعت من الكود</span></li>
+      <li><b>4:48</b><span>الفصل السادس: منتصف الليل · النصر وتقرير المعركة</span></li>
+    </ol>
+  </section>
+</main>
+
+<script>
+const PARTS = 16, TOTAL = 211317785;
+const $ = (id) => document.getElementById(id);
+let film = null;
+
+$('load').addEventListener('click', async () => {
+  $('load').disabled = true;
+  $('barWrap').hidden = false;
+  const chunks = [];
+  let got = 0;
+  try {
+    for (let i = 0; i < PARTS; i++) {
+      const r = await fetch(`film/part-${String(i).padStart(2, '0')}.mp4`);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const b = await r.arrayBuffer();
+      chunks.push(b);
+      got += b.byteLength;
+      $('bar').style.width = (got / TOTAL * 100).toFixed(1) + '%';
+      $('loadNote').textContent = `جارٍ التحميل: ${Math.round(got / 1048576)} من ${Math.round(TOTAL / 1048576)} MB`;
+    }
+  } catch (e) {
+    $('loadNote').textContent = 'انقطع التحميل. تحقّق من الاتصال ثم اضغط «حمّل الفيلم» مرة أخرى.';
+    $('load').disabled = false;
+    return;
+  }
+  film = new Blob(chunks, { type: 'video/mp4' });
+  const v = document.createElement('video');
+  v.controls = true; v.playsInline = true; v.preload = 'auto';
+  v.src = URL.createObjectURL(film);
+  $('cover').remove();
+  $('player').appendChild(v);
+  v.play().catch(() => {});
+  enableSave();
+});
+
+async function enableSave() {
+  const downloads = window.claude ? await window.claude.use('downloads') : null;
+  if (!downloads) {
+    $('status').textContent = 'التنزيل غير متاح في هذا العرض. افتح الصفحة في claude.ai من المتصفح.';
+    return;
+  }
+  $('save').disabled = false;
+  $('status').textContent = 'سيُحفظ باسم «غسق - فيلم توثيقي.mp4».';
+  $('save').onclick = async () => {
+    $('save').disabled = true;
+    try {
+      await downloads.save({ filename: 'غسق - فيلم توثيقي.mp4', data: film });
+      $('status').textContent = 'أُرسل الفيلم إلى مجلد التنزيلات في جهازك.';
+    } catch (e) {
+      const code = e && e.code;
+      $('status').textContent = code === 'declined' ? 'أُلغي التنزيل. اضغط الزر مرة أخرى متى شئت.'
+        : code === 'rate_limited' ? 'هناك نافذة تنزيل مفتوحة. أكملها ثم أعد المحاولة.'
+        : 'تعذّر التنزيل في هذا العرض.';
+    }
+    $('save').disabled = false;
+  };
+}
+</script>
