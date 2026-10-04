@@ -564,7 +564,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
 #main .mitem { animation: itemIn .5s var(--ease) backwards; }
 #main .mitem:nth-of-type(1) { animation-delay: .08s; } #main .mitem:nth-of-type(2) { animation-delay: .13s; } #main .mitem:nth-of-type(3) { animation-delay: .18s; }
-#main .mitem:nth-of-type(4) { animation-delay: .23s; } #main .mitem:nth-of-type(5) { animation-delay: .28s; } #main .mitem:nth-of-type(6) { animation-delay: .33s; }
+#main .mitem:nth-of-type(4) { animation-delay: .23s; } #main .mitem:nth-of-type(5) { animation-delay: .28s; }
 @keyframes itemIn { from { opacity: 0; transform: translateX(28px); } }
 .stagger > * { animation: fadeUp .4s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 30ms); }
 @media (prefers-reduced-motion: reduce) {

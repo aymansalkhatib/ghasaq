@@ -1,53 +1,55 @@
-# فيلم «غَسَق» التوثيقي
+# Ghasaq documentary
 
-أداة تصنع فيلماً توثيقياً عن اللعبة من اللعبة نفسها. تشغّل اللعبة في Chromium بلا واجهة، وتصوّرها إطاراً إطاراً، وتولّد صوتها الأصلي متزامناً معه، ثم تركّب المشاهد في فيلم واحد بدقة 1920×1080.
+A tool that makes a documentary about the game from the game itself. It runs the game in headless Chromium, captures it frame by frame, generates its own soundtrack in sync with the picture, and cuts the scenes into one 1920×1080 film.
 
-لا تعدّل الأداة أي ملف في `src/`. كل شيء يُحقن وقت التشغيل.
+The tool does not modify anything in `src/`. Everything is injected at run time. The on-screen titles and captions in the film are in Arabic, like the game.
 
-## التشغيل
+## Running it
 
-تحتاج **Node.js 18+** و**ffmpeg** في `PATH` و**Playwright** مع Chromium، ثم `npm install` في جذر المشروع.
+You need **Node.js 18+**, **ffmpeg** on your `PATH`, and **Playwright** with Chromium, then `npm install` in the project root.
 
 ```bash
-node documentary/server.mjs                     # خادم اللعبة للتسجيل على المنفذ 4176 (اتركه يعمل)
-DOC_DRY=1 node documentary/record.mjs A B C     # تجربة سريعة: صورة كل ثانيتين في documentary/out-dry/
-node documentary/record.mjs A B C D E F G       # التسجيل الحقيقي في documentary/out/<المشهد>/
-node documentary/edit.mjs                       # المونتاج: documentary/ghasaq-documentary.mp4
-node documentary/edit.mjs draft.mp4 --draft     # نسخة سريعة 960×540 للمراجعة
+node documentary/server.mjs                     # game server for recording on port 4176 (leave it running)
+DOC_DRY=1 node documentary/record.mjs A B C     # quick trial: one image every 2 seconds in documentary/out-dry/
+node documentary/record.mjs A B C D E F G       # the real recording, into documentary/out/<scene>/
+node documentary/edit.mjs                       # edit: documentary/ghasaq-documentary.mp4
+node documentary/edit.mjs draft.mp4 --draft     # fast 960×540 draft for review
 ```
 
-- سجّل المشاهد **بالترتيب**: تقدّم اللاعب (الخبرة والرتبة والأوسمة) ينتقل من مشهد إلى الذي يليه عبر `out/state.json`، وتقرير المعركة في المشهد G يعرض حصيلتها.
-- على جهاز بلا بطاقة رسوميات (رسم برمجي SwiftShader) يستغرق الإطار ثانية تقريباً، أي قرابة ٣٠ دقيقة لكل دقيقة من الفيلم.
-- لا تعدّل `director.js` أثناء التسجيل: كل مشهد يحمّل نسخته عند بدايته.
+- Record the scenes **in order**. The player's progress (experience, rank, medals) carries from one scene to the next through `out/state.json`, and the after-action report in scene G shows the totals.
+- On a machine without a GPU (software rendering with SwiftShader) a frame takes about a second, which is roughly 30 minutes of rendering per minute of film.
+- Do not edit `director.js` while recording: each scene loads its own copy when it starts.
 
-## الملفات
+## Files
 
-| الملف | وظيفته |
-|---|---|
-| `server.mjs` | خادم Vite للعبة: الخطوط داخلها (لا يحتاج إنترنت)، وبلا إعادة تحميل تلقائي حتى لا تنقطع لقطة. |
-| `shim.js` | يُحقن قبل كود اللعبة. ساعة افتراضية لـ `requestAnimationFrame` والمؤقتات و`performance.now` و`Date` وحركات CSS. `AudioContext` مبني على `OfflineAudioContext` يتبع الساعة نفسها، فيُولَّد الصوت كاملاً في النهاية. `Math.random` ببذرة ثابتة. |
-| `director.js` | «المخرج»: يستورد وحدات اللعبة نفسها. فيه لاعب آلي يصوّب ويطلق ويتحرك، وكاميرا سينمائية للقطات الجوية، وطبقة عربية للعناوين والتعليقات، ومؤشر فأرة للقوائم، والمشاهد السبعة. |
-| `record.mjs` | يفتح متصفحاً لكل مشهد، ويخطو بالساعة 1/30 ثانية، ويمرّر كل إطار إلى ffmpeg. في النهاية يولّد الصوت ويقصّه على الصورة. |
-| `edit.mjs` | يجمع المشاهد بانتقالات متقاطعة، ويوازن صوت كل مشهد ثم الفيلم كله إلى ‎-16 LUFS، ويكبّر الصورة إلى 1080p. |
+| File | Purpose |
+| --- | --- |
+| `server.mjs` | Vite server for the game: fonts bundled (no network needed) and no hot reload, so a take is never interrupted. |
+| `shim.js` | Injected before any game code. A virtual clock for `requestAnimationFrame`, timers, `performance.now`, `Date` and CSS animations. `AudioContext` is replaced by an `OfflineAudioContext` that follows the same clock, so the whole soundtrack is rendered at the end. `Math.random` is seeded. |
+| `director.js` | The "director". It imports the game's own modules and contains an autopilot that aims, fires and moves, a cinematic camera for the aerial shots, an Arabic layer for titles and captions, a mouse pointer for the menus, and the seven scenes. |
+| `record.mjs` | Opens a browser per scene, steps the clock 1/30 s at a time and pipes every frame to ffmpeg. At the end it renders the audio and trims it to the picture. |
+| `edit.mjs` | Joins the scenes with crossfades, levels each scene's sound and then the whole film to −16 LUFS, and scales the picture to 1080p. |
+| `film-page/` | A small download page for the finished film (Arabic interface). The video files themselves stay out of git. |
 
-## المشاهد
+## Scenes
 
-| المشهد | المحتوى |
-|---|---|
-| A | العنوان، وشاشة البداية، والقائمة، والإحاطة (الخرائط الثلاث والصعوبة)، والعتاد، ثم الفصل الأول «الساعة الأولى» (١٦:٠٠) |
-| B | الفصل الثاني «الإسناد» عند الغروب: الاستطلاع، وصندوق الإمداد بالمظلة وبندقية القنص، والرفيق، والتركيز |
-| C | الفصل الثالث «حين يحلّ الليل»: المصباح، وليزر الغزاة، وإسقاط المروحية، والغارة الجوية |
-| D | الفصل الرابع «ساحات أخرى»: القرية المهجورة من الجو، ثم قتال في عاصفة رملية |
-| E | محطة الوادي عند الغروب: لقطة جوية ثم لقطة رافعة نحو برج الساعة |
-| F | الفصل الخامس «صُنعت من الكود»: يوم كامل في ثوانٍ، والجنود، والأسطول الجوي، وبطاقة الأرقام |
-| G | الفصل السادس «منتصف الليل»: الموجة الأخيرة، والنصر، وتقرير المعركة، وبطاقة الختام |
+| Scene | Content |
+| --- | --- |
+| A | Title, splash screen, menu, briefing (the three maps and difficulty), loadout, then chapter one, "The first hour" (16:00) |
+| B | Chapter two, "Support", at sunset: recon, the supply crate by parachute and the marksman rifle, the ally, focus |
+| C | Chapter three, "When night falls": the weapon light, raiders' laser sights, bringing down the helicopter, the airstrike |
+| D | Chapter four, "Other grounds": the abandoned village from the air, then a fight in a sandstorm |
+| E | Valley Station at sunset: an aerial shot, then a crane shot toward the clock tower |
+| F | Chapter five, "Made from code": a whole day in seconds, the soldiers, the air fleet, a card with the numbers |
+| G | Chapter six, "Midnight": the last wave, victory, the after-action report, the closing card |
 
-## إفصاح
+## Disclosure
 
-اللعب في الفيلم **للاعب آلي**، مع تسهيلات للتصوير:
-- الضرر على اللاعب ٣٠٪، ولا تنزل صحته تحت ٥٨.
-- الرفاق أصلب، وضرر الرصاص على المروحية مضاعف.
-- يُضاف غزاة في كل معركة حتى لا تفرغ الساحة، ونقاط الإسناد معطاة مسبقاً.
-- صندوق الإمداد يحمل بندقية القنص دائماً.
+The play in the film is by an **autopilot**, with some help for filming:
 
-بطاقة الختام تقول ذلك صراحة.
+- Damage to the player is 30%, and health never drops below 58.
+- Allies are tougher, and bullet damage to the helicopter is doubled.
+- Extra raiders are added to every fight so the arena never empties, and support points are granted in advance.
+- The supply crate always carries the marksman rifle.
+
+The closing card says so openly.

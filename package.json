@@ -2,16 +2,28 @@
   "name": "ghasaq",
   "private": true,
   "version": "2.2.0",
-  "description": "غسق: لعبة تصويب ثلاثية الأبعاد مبنية بـ Three.js وcannon-es",
+  "description": "Ghasaq: an Arabic-language, first-person survival shooter for the browser. Hold a desert fortress from 16:00 to midnight. Built with Three.js, cannon-es and Vite; every texture, model and sound is generated in code.",
+  "keywords": [
+    "game",
+    "fps",
+    "first-person-shooter",
+    "browser-game",
+    "threejs",
+    "webgl",
+    "cannon-es",
+    "vite",
+    "web-audio",
+    "procedural",
+    "arabic",
+    "rtl"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:mobile": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "build:single": "node scripts/build-single.mjs",
-    "build:apk": "node scripts/build-android.mjs",
-    "build:exe": "node scripts/build-desktop.mjs"
+    "build:single": "node scripts/build-single.mjs"
   },
   "dependencies": {
     "cannon-es": "0.20.0",

@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 // SINGLE_FILE=1 bundles everything into one script (used by scripts/build-single.mjs)
 const single = !!process.env.SINGLE_FILE;
-// OFFLINE_FONTS=1 bundles the fonts instead of loading them from Google Fonts (the exe and apk builds)
+// OFFLINE_FONTS=1 serves the bundled fonts instead of loading them from Google Fonts (works without a network; the documentary recorder uses it)
 const offline = !!process.env.OFFLINE_FONTS;
 
 /** Swaps the Google Fonts links in index.html for the bundled font files. */
@@ -25,7 +25,7 @@ export default defineConfig({
   build: {
     target: 'es2020',
     chunkSizeWarningLimit: 2000,
-    outDir: single ? (offline ? 'dist-app' : 'dist-single') : 'dist',
+    outDir: single ? 'dist-single' : 'dist',
     cssCodeSplit: !single,
     assetsInlineLimit: single ? 100000000 : 4096,
     rollupOptions: {

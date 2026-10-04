@@ -1,144 +1,159 @@
-# غَسَق
+<p align="center">
+  <img src="docs/images/emblem.svg" alt="Ghasaq emblem" width="120" />
+</p>
 
-لعبة تصويب ثلاثية الأبعاد تعمل في المتصفح، مبنية بـ **Three.js** للرسوميات و**cannon-es** للفيزياء، وتُجمَّع بـ **Vite**.
-كل شيء في اللعبة مصنوع بالكود: الخامات تُرسم على لوحات canvas، والنماذج تُبنى من أشكال هندسية، والأصوات والموسيقى تُولَّد بـ Web Audio. لا توجد صور أو ملفات صوت خارجية.
+<h1 align="center">Ghasaq <sub>غَسَق</sub></h1>
 
-الفكرة: تدافع مع رفاقك عن الموقع من الساعة ١٦:٠٠ حتى منتصف الليل. كل ساعة موجة من الغزاة، والشمس تغرب أمامك موجة بعد موجة.
+<p align="center">
+  <b>Hold the fortress from 16:00 to midnight.</b><br />
+  An Arabic-language, first-person survival shooter that runs in the browser.<br />
+  Built with Three.js, cannon-es and Vite. Every texture, model and sound is generated in code.
+</p>
 
----
-
-## التشغيل
-
-تحتاج **Node.js** (الإصدار 18 أو أحدث).
-
-| الطريقة | ماذا تفعل |
-|---|---|
-| انقر مرتين على `start.bat` | يثبّت الحزم في أول مرة ثم يفتح اللعبة على `http://localhost:5173` |
-| انقر مرتين على `start-mobile.bat` | يشغّل اللعبة على شبكتك المحلية لتفتحها من الهاتف (نفس شبكة الـ Wi-Fi) |
-| `npm install` ثم `npm run dev` | نفس الأول من سطر الأوامر |
-| `npm run build` | نسخة نهائية في مجلد `dist/` تُرفع إلى أي استضافة |
-| `npm run build:single` | ملف واحد مستقل `dist-single/ghasaq.html` يعمل بفتحه مباشرة أو يُرسل كما هو |
-| `npm run preview` | يعرض النسخة النهائية من `dist/` للتجربة |
-| `npm run build:apk` | تطبيق أندرويد `release/Ghasaq-<الإصدار>.apk` (انظر «التصدير») |
-| `npm run build:exe` | لعبة ويندوز: مثبّت ونسخة محمولة في `release/` (انظر «التصدير») |
-
-**على الهاتف:** شغّل `start-mobile.bat`، وافتح عنوان «Network» الذي يظهر في النافذة من متصفح الهاتف، وأدِر الهاتف أفقياً. أزرار اللمس تظهر تلقائياً.
+<p align="center">
+  <img src="docs/images/hero.jpg" alt="Ghasaq gameplay: defending the citadel courtyard in the afternoon" width="900" />
+</p>
 
 ---
 
-## التصدير: أندرويد وويندوز
+## About
 
-النسختان تحملان اللعبة نفسها في ملف واحد مع خطوطها (`dist-app/ghasaq.html`)، فتعملان دون إنترنت. الملفات الناتجة تُكتب في `release/` (خارج git).
+Ghasaq (Arabic for *dusk*) is a wave-survival shooter. You and your squad defend a desert position while the sun sets in front of you: a new wave of raiders attacks every in-game hour, from 16:00 until midnight, and the light, the enemy and the music all get harder as the night comes in.
 
-### أندرويد: `npm run build:apk`
+The whole game is in Arabic and laid out right to left, from the menus to the radio chatter. It needs no installation and no downloads of art or audio: there are **no image or sound files in the project**. Textures are painted on canvases, models are assembled from primitives, and the sound effects and music are synthesised with the Web Audio API.
 
-- تحتاج **Android SDK** (يأتي مع Android Studio) و**JDK 17** أو أحدث (يُستعمل الـ JDK المرفق مع Android Studio تلقائياً إن لم يكن `JAVA_HOME` مضبوطاً).
-- مسار الـ SDK في `android/local.properties` (خارج git): سطر واحد مثل `sdk.dir=C:/Users/<اسمك>/AppData/Local/Android/Sdk`. يكتبه Android Studio عند فتح مجلد `android/`.
-- الناتج `release/Ghasaq-<الإصدار>.apk`: شاشة كاملة أفقية، بلا أي أذونات، وزر الرجوع في الهاتف يعمل كزر الرجوع في اللعبة.
-- **التثبيت:** انقل الملف إلى الهاتف وافتحه، واسمح بـ«التثبيت من مصادر غير معروفة» عندما يطلبه.
-- **مفتاح التوقيع:** `android/keystore/ghasaq-release.jks` وكلمة سرّه في `android/keystore.properties`. الملفان **خارج git عمداً**، فاحفظ نسخة منهما في مكان آمن: بدونهما لا يقبل الهاتف تحديث اللعبة فوق النسخة المثبّتة. إن لم يوجدا يُوقَّع التطبيق بمفتاح التجربة (debug) ويعمل للتجربة فقط. لإنشاء مفتاح جديد:
-  ```
-  keytool -genkeypair -keystore android/keystore/ghasaq-release.jks -alias ghasaq -keyalg RSA -keysize 2048 -validity 10000
-  ```
-  ثم اكتب في `android/keystore.properties`: `storeFile=keystore/ghasaq-release.jks` و`storePassword=` و`keyAlias=ghasaq` و`keyPassword=`.
-- **الإصدار:** `versionCode` و`versionName` في `android/app/build.gradle`. ارفع `versionCode` مع كل نسخة توزّعها.
+## Features
 
-### ويندوز: `npm run build:exe`
+- **Eight waves, one evening.** Defend from 16:00 to midnight in *Operation Dusk*, or play *Until Dawn*, which never ends. Three difficulties: Recruit, Professional and Legend.
+- **Raiders that fight like players.** They run between cover, peek and shoot, flank while others pin you down, throw grenades at anyone who hides too long, and hear your footsteps and shots. Snipers glint before they fire, and helicopters rope in squads. On Legend they are fast and accurate.
+- **Three maps**, each with its own entry points, sniper nests and a walled interior where supply drops land: the *Sand Citadel*, the *Abandoned Village* and *Valley Station*.
+- **Five weapons** with iron sights, red dots and scopes (assault rifle, SMG, shotgun, marksman rifle, pistol), plus a knife, cooked grenades, climbing and vaulting.
+- **Air support and allies.** Earn points for kills, then spend them on a recon plane, a parachuted supply crate, an ally dropped by parachute, or an airstrike on a target you mark with binoculars.
+- **Focus.** Kills and headshots fill a focus meter; press `Q` to slow time down for a few seconds while you stay fast.
+- **A full day and night.** Afternoon light turns to dusk and stars. At night your weapon light (`F`) carries an even cone of light, and sandstorms blind everyone.
+- **Adaptive sound.** The music (built on the Hijaz maqam) follows the tension of the fight with stingers for contact, assault and retreat. You hear your own pain and a heartbeat when you drop below 50 HP. Radio traffic and squad banter are shown as text only: nothing is read aloud.
+- **Progression.** 13 ranks, 14 medals, daily orders and a service record, all saved in the browser.
+- **Keyboard and mouse, gamepad and touch.** Touch controls appear automatically on phones and tablets.
 
-- أول مرة يثبّت Electron وأدوات التحزيم في `desktop/node_modules` (بضع مئات من الميغابايت، مرة واحدة).
-- الناتج:
-  - `release/Ghasaq-<الإصدار>-Setup.exe`: مثبّت بنقرة واحدة، يضع اختصار «غسق» على سطح المكتب وفي قائمة ابدأ، ويظهر في «التطبيقات» لإزالته.
-  - `release/Ghasaq-<الإصدار>-Portable.exe`: يعمل مباشرة دون تثبيت.
-- تبدأ اللعبة بملء الشاشة: <kbd>F11</kbd> أو <kbd>Alt</kbd>+<kbd>Enter</kbd> للتبديل مع النافذة، و`--windowed` لتبدأ في نافذة. زر «خروج» في القائمة الرئيسية يظهر في هذه النسخة فقط.
-- الملفان غير موقّعين، فيعرض ويندوز عند أول تشغيل على جهاز آخر «Windows protected your PC»: اضغط «More info» ثم «Run anyway». إزالة التحذير تحتاج شهادة توقيع كود مدفوعة.
-- الإصدار يؤخذ من `package.json` تلقائياً. إعدادات Electron والمثبّت في `desktop/package.json` (الحقل `build`)، والنافذة في `desktop/main.js`.
+## Screenshots
 
----
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/night.jpg" alt="Night in the citadel, lit by the weapon light" /><br /><sub>Night in the citadel: street lamps, stars, and the weapon light</sub></td>
+    <td width="50%"><img src="docs/images/village.jpg" alt="A raider at the village well" /><br /><sub>The Abandoned Village: a raider at the well</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/briefing.jpg" alt="Operation briefing with the live aerial view of the map" /><br /><sub>Briefing: a live aerial view of the chosen map, mission and difficulty</sub></td>
+    <td><img src="docs/images/menu.jpg" alt="Main menu over the live citadel scene" /><br /><sub>Main menu over the live scene, with rank and daily orders</sub></td>
+  </tr>
+</table>
 
-## بنية المشروع
+<p align="center">
+  <img src="docs/images/mobile.jpg" alt="Touch controls on a phone in landscape" width="560" /><br />
+  <sub>Touch layout on a phone in landscape</sub>
+</p>
+
+## Getting started
+
+You need **Node.js 18 or newer**.
+
+```bash
+npm install
+npm run dev        # opens http://localhost:5173
+```
+
+On Windows you can also double-click `start.bat` (installs the packages on the first run, then starts the game) or `start-mobile.bat` (serves the game on your local network so you can open it from a phone on the same Wi-Fi: open the *Network* address it prints and rotate the phone to landscape).
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Development server with hot reload |
+| `npm run dev:mobile` | Same, but reachable from other devices on your network |
+| `npm run build` | Production build in `dist/`, ready for any static host |
+| `npm run build:single` | The whole game as one self-contained file, `dist-single/ghasaq.html` (open it directly or send it as is) |
+| `npm run preview` | Serves the production build from `dist/` |
+
+The game loads its three fonts from Google Fonts. To run without a network, start the dev server with `OFFLINE_FONTS=1` set, which serves the bundled `@fontsource` files instead.
+
+## Controls
+
+| Keyboard and mouse | Action |
+| --- | --- |
+| `W` `A` `S` `D` | Move |
+| `Shift` | Sprint; hold your breath while aiming through a scope |
+| `C` | Crouch (steadies your aim) |
+| `Space` | Jump; toward a crate or ledge (up to about 1.5 m) it climbs |
+| Left / right mouse button | Fire / aim down sights |
+| `R` | Reload |
+| `1` `2` / mouse wheel | Switch weapon |
+| `E` | Take the weapon shown above a supply crate |
+| Hold `G` | Cook a grenade, release to throw |
+| `V` | Knife (always lethal from behind) |
+| `Q` | Focus: slow time down |
+| `F` | Weapon light |
+| `3` `4` `5` `6` | Recon · supply drop · ally · airstrike |
+| `Tab` | Tactical map |
+| `Esc` / `P` | Pause |
+
+A gamepad works out of the box, and touch players get an on-screen layout (virtual stick on the left, look on the right, drag on the fire button to aim while shooting). The in-game **Guide** lists every control.
+
+## Project structure
 
 ```
 ghasaq/
-├─ index.html              كل الشاشات والواجهة (HTML)
-├─ vite.config.js          إعداد التجميع
-├─ scripts/
-│  ├─ build-single.mjs     بناء اللعبة في ملف HTML واحد (و--app: مع الخطوط داخله)
-│  ├─ build-android.mjs    بناء تطبيق أندرويد
-│  └─ build-desktop.mjs    بناء نسخة ويندوز
-├─ android/                مشروع أندرويد: نشاط واحد بـ WebView يعرض اللعبة
-├─ desktop/                تطبيق ويندوز (Electron): main.js وpreload.js وإعدادات البناء
-├─ packaging/              أيقونة اللعبة (SVG وPNG)
+├─ index.html              All screens and the HUD markup
+├─ vite.config.js          Build configuration
+├─ start.bat, start-mobile.bat   Windows launchers
+├─ scripts/build-single.mjs      Builds the one-file version
+├─ docs/images/            README images
+├─ documentary/            Tool that films the game for a documentary (see its README)
 └─ src/
-   ├─ main.js              نقطة البداية: التحميل وربط الأزرار بالأفعال
-   ├─ config/              الأرقام التي تتحكم باللعبة
-   │  ├─ balance.js        الأسلحة، الأعداء، الصعوبات، الموجات، الإسناد، الرتب، الأوسمة، الخرائط
-   │  └─ settings.js       إعدادات اللاعب وقيمها الافتراضية
-   ├─ core/                المحرك: الرسم، السماء والوقت، الفيزياء، الحلقة الرئيسية، الحالة المشتركة
-   ├─ world/               العالم
-   │  ├─ map.js            مُحمّل الخرائط (يبدّل بينها)
-   │  ├─ maps/             كل خريطة في ملف: citadel.js (قصر الرمال)، village.js (القرية المهجورة)، station.js (محطة الوادي)
-   │  ├─ builder.js        قطع البناء: جدران، بيوت، أقواس، نخيل، أكياس رمل...
-   │  ├─ collision.js      تصادم اللاعب والجنود مع الجدران والصناديق
-   │  ├─ nav.js            شبكة المشي وإيجاد الطريق للجنود
-   │  ├─ props.js          الصناديق والبراميل المتحركة (فيزياء)
-   │  └─ ambient.js        الأضواء والأعلام والطيور
-   ├─ entities/            اللاعب، الغزاة وذكاؤهم، الرفاق، نموذج الجندي وحركته، الجثث الفيزيائية
-   ├─ weapons/             الأسلحة ونماذجها بين يديك، القنابل
-   ├─ vehicles/            الطائرات والمروحية والمظلات وصندوق الإمداد
-   ├─ systems/             الموجات، الإسناد الجوي، الالتقاط، التركيز، الترقية، التحديات اليومية
-   ├─ fx/                  الجسيمات، الانفجارات، آثار الرصاص والدم، الطقس
-   ├─ audio/               المؤثرات، الموسيقى (مقام الحجاز)، اللاسلكي
-   ├─ ui/                  الواجهة داخل اللعب، الشاشات والقوائم، معاينة الخرائط الجوية، مستودع السلاح، أزرار اللمس
-   ├─ input/               لوحة المفاتيح والفأرة وذراع التحكم
-   ├─ styles/              ملفات التنسيق CSS
-   └─ dev/autotest.js      مشاهد اختبار آلية (للمطوّر)
+   ├─ main.js              Entry point: loading, wiring buttons to actions
+   ├─ config/              The numbers that drive the game
+   │  ├─ balance.js        Weapons, enemies, difficulties, waves, support, ranks, medals, maps
+   │  └─ settings.js       Player settings and their defaults
+   ├─ core/                Renderer, sky and time of day, physics, main loop, shared state
+   ├─ world/               Map loader, one file per map (maps/), building pieces, collision,
+   │                       navigation grid, physics props, ambient lights, flags and birds
+   ├─ entities/            Player, raiders and their AI, allies, the soldier model and animation, ragdolls
+   ├─ weapons/             Weapons, their first-person models, grenades
+   ├─ vehicles/            Aircraft, the helicopter, parachutes, the supply crate
+   ├─ systems/             Waves, air support, pickups, focus, progression, daily challenges, tension
+   ├─ fx/                  Particles, explosions, bullet marks, blood, weather, the weapon light
+   ├─ audio/               Sound effects, music, heartbeat, pain sounds, radio
+   ├─ ui/                  HUD, screens and menus, aerial map previews, armory, touch controls
+   ├─ input/               Keyboard and mouse, gamepad
+   ├─ styles/              CSS
+   └─ dev/autotest.js      Ready-made test scenes (developer tool)
 ```
 
----
+## Tuning and extending
 
-## تعديلات شائعة
+| To change | Open |
+| --- | --- |
+| A weapon's damage, fire rate or ammo | `src/config/balance.js` → `WEAPONS` |
+| How hard the raiders are | `src/config/balance.js` → `ENEMY`, `DIFFICULTY`, `waveDef` |
+| Cost or duration of air support | `src/config/balance.js` → `SUPPORTS` |
+| A map (buildings, cover, entry points, sniper nests) | `src/world/maps/citadel.js`, `village.js` or `station.js` |
+| Add a map | Copy a file in `src/world/maps/`, register it in `MAP_DEFS` in `src/world/map.js`, and add its name and description to `MAPS` in `balance.js` |
+| Menu text | `index.html` and `src/ui/screens.js` |
+| Colours and fonts | `src/styles/base.css` (variables at the top) |
+| Default volume | `src/config/settings.js` → `DEFAULTS` |
 
-| تريد أن... | افتح |
-|---|---|
-| تغيّر ضرر سلاح أو سرعة إطلاقه أو ذخيرته | `src/config/balance.js` ← `WEAPONS` |
-| تجعل الغزاة أصعب أو أسهل | `src/config/balance.js` ← `ENEMY` و`DIFFICULTY` و`waveDef` |
-| تغيّر تكلفة الإسناد الجوي أو مدته | `src/config/balance.js` ← `SUPPORTS` |
-| تعدّل خريطة (مباني، سواتر، نقاط دخول الغزاة، أعشاش القنص) | `src/world/maps/citadel.js` أو `village.js` أو `station.js` |
-| تضيف خريطة جديدة | انسخ ملف خريطة في `src/world/maps/`، سجّله في `MAP_DEFS` داخل `src/world/map.js`، وأضف اسمه ووصفه في `MAPS` داخل `balance.js` |
-| تغيّر نصوص القوائم | `index.html` و`src/ui/screens.js` |
-| تغيّر الألوان والخطوط | `src/styles/base.css` (المتغيرات في أعلى الملف) |
-| تغيّر مستوى الصوت الافتراضي | `src/config/settings.js` ← `DEFAULTS` |
+Each map describes where raiders enter (`spawns`), where the helicopter hovers (`hover`), the sniper nests (`snipers`), your start position (`start`) and the walled interior (`interior`) where supply crates may land, so a crate never falls outside the walls.
 
-كل خريطة تصف: نقاط دخول الغزاة (`spawns`)، أماكن تحويم المروحية (`hover`)، أعشاش القنص (`snipers`)، مكان بدايتك (`start`)، والمنطقة الداخلية (`interior`) التي يُسمح أن يهبط فيها صندوق الإمداد، فلا يهبط أبداً خارج السور.
+## Testing
 
----
+Append `#autotest-<name>` to the address to jump straight into a ready-made scene, for example `#autotest-combat`, `#autotest-village` or `#autotest-torch-citadel`. Prefix it with `touch-` (`#touch-autotest-combat`) to try the touch layout on a desktop browser. The scenes are listed at the top of `src/dev/autotest.js`.
 
-## الأزرار
+`#autotest-droptest` runs 400 supply drops from random positions on every map and prints the result to the console. It must report `bad=0`.
 
-| الحاسوب | الفعل |
-|---|---|
-| W A S D | الحركة |
-| Shift | ركض، وحبس النفس عند النظر بالمنظار |
-| C | انحناء |
-| Space | قفز، ومع التقدم نحو صندوق أو حافة: تسلّق |
-| الزر الأيسر / الأيمن | إطلاق / تصويب دقيق |
-| R | تعبئة |
-| 1 / 2 / العجلة | تبديل السلاح |
-| E | أخذ السلاح المعروض فوق صندوق الإمداد |
-| G مطولاً | طبخ القنبلة ثم رميها |
-| V | سكين (قاتلة من الخلف) |
-| Q | التركيز: إبطاء الزمن |
-| F | مصباح السلاح |
-| 3 4 5 6 | استطلاع · إمداد · رفيق · غارة |
-| Tab | الخريطة التكتيكية |
-| Esc / P | إيقاف مؤقت |
+## Documentary tool
 
-ذراع التحكم مدعوم، والدليل الكامل داخل اللعبة في «دليل اللعب».
+`documentary/` contains a tool that records the real game, frame by frame with its own synthesised soundtrack, and cuts the scenes into a film. It never modifies anything in `src/`. See [documentary/README.md](documentary/README.md).
 
----
+## Tech
 
-## اختبار آلي (للمطوّر)
-
-أضف إلى العنوان `#autotest-<اسم>` ليبدأ مشهد جاهز، مثل `#autotest-combat` أو `#autotest-village`.
-`#autotest-droptest` يختبر ٤٠٠ إنزال إمداد من أماكن عشوائية في كل خريطة ويطبع النتيجة في الـ Console (يجب أن تكون `bad=0`).
-أضف `touch-` قبلها (`#touch-autotest-menu`) لتجربة واجهة اللمس على الحاسوب.
+- [Three.js](https://threejs.org) r170 for rendering, [cannon-es](https://pmndrs.github.io/cannon-es/) for physics, [Vite](https://vitejs.dev) for development and bundling.
+- Plain JavaScript modules, no framework. Two runtime dependencies.
+- Web Audio synthesis for every sound, including the music.
+- The raiders are a fictional invading faction.

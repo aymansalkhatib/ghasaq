@@ -722,8 +722,6 @@ export function menuNav(dir) {
 export function initScreens() {
   if (isTouch) $('pressLine').textContent = 'المس الشاشة للبدء';
   $('splash').addEventListener('pointerdown', enterMenu);
-  // the Windows app (desktop/preload.js) can close the game from the main menu
-  if (window.ghasaqApp && window.ghasaqApp.quit) $('exitItem').hidden = false;
   wireMenu($('mainMenu'), $('menuDesc'));
   wireMenu($('pauseMenu'));
   $('main').addEventListener('click', (e) => {
@@ -736,7 +734,6 @@ export function initScreens() {
     else if (act === 'record') openRecord();
     else if (act === 'settings') openSettings('main');
     else if (act === 'guide') openControls('main');
-    else if (act === 'exit') window.ghasaqApp.quit();
   });
   $('ctlBack').addEventListener('click', () => { sfx.back(); closeControls(); });
   $('guideTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; guideTab = b.dataset.gtab; sfx.tick(); renderGuide(); $('controls').querySelector('.page-body').scrollTop = 0; });

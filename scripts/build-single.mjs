@@ -1,20 +1,16 @@
 /*
  * Builds the whole game into ONE self-contained HTML file (scripts and styles inlined).
  *
- *   npm run build:single     → dist-single/ghasaq.html  (fonts from Google Fonts; for the web)
- *   node scripts/build-single.mjs --app
- *                            → dist-app/ghasaq.html     (fonts bundled; used inside the exe and apk)
+ *   npm run build:single     → dist-single/ghasaq.html  (fonts from Google Fonts)
  */
 import { build } from 'vite';
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const app = process.argv.includes('--app');
 process.env.SINGLE_FILE = '1';
-if (app) process.env.OFFLINE_FONTS = '1';
 await build({ logLevel: 'warn' });
 
-const out = app ? 'dist-app' : 'dist-single';
+const out = 'dist-single';
 let html = readFileSync(join(out, 'index.html'), 'utf8');
 const assets = join(out, 'assets');
 const files = readdirSync(assets);
