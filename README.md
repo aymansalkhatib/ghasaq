@@ -48,11 +48,6 @@ The whole game is in Arabic and laid out right to left, from the menus to the ra
   </tr>
 </table>
 
-<p align="center">
-  <img src="docs/images/mobile.jpg" alt="Touch controls on a phone in landscape" width="560" /><br />
-  <sub>Touch layout on a phone in landscape</sub>
-</p>
-
 ## Getting started
 
 You need **Node.js 18 or newer**.
@@ -71,8 +66,6 @@ On Windows you can also double-click `start.bat` (installs the packages on the f
 | `npm run build` | Production build in `dist/`, ready for any static host |
 | `npm run build:single` | The whole game as one self-contained file, `dist-single/ghasaq.html` (open it directly or send it as is) |
 | `npm run preview` | Serves the production build from `dist/` |
-
-The game loads its three fonts from Google Fonts. To run without a network, start the dev server with `OFFLINE_FONTS=1` set, which serves the bundled `@fontsource` files instead.
 
 ## Controls
 
@@ -105,7 +98,6 @@ ghasaq/
 ├─ start.bat, start-mobile.bat   Windows launchers
 ├─ scripts/build-single.mjs      Builds the one-file version
 ├─ docs/images/            README images
-├─ documentary/            Tool that films the game for a documentary (see its README)
 └─ src/
    ├─ main.js              Entry point: loading, wiring buttons to actions
    ├─ config/              The numbers that drive the game
@@ -147,9 +139,6 @@ Append `#autotest-<name>` to the address to jump straight into a ready-made scen
 
 `#autotest-droptest` runs 400 supply drops from random positions on every map and prints the result to the console. It must report `bad=0`.
 
-## Documentary tool
-
-`documentary/` contains a tool that records the real game, frame by frame with its own synthesised soundtrack, and cuts the scenes into a film. It never modifies anything in `src/`. See [documentary/README.md](documentary/README.md).
 
 ## Tech
 

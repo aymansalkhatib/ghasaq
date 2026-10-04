@@ -3,11 +3,3 @@ dist/
 dist-*/
 *.log
 .DS_Store
-
-# documentary takes and renders (generated)
-documentary/out/
-documentary/out-dry/
-documentary/*.mp4
-documentary/parts/
-documentary/film-page/film/
-documentary/film-page/poster.jpg
