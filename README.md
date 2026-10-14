@@ -2,7 +2,7 @@
   <img src="docs/images/emblem.svg" alt="Ghasaq emblem" width="120" />
 </p>
 
-<h1 align="center">Ghasaq <sub>غَسَق</sub></h1>
+<h1 align="center">Ghasaq</h1>
 
 <p align="center">
   <b>Hold the fortress from 16:00 to midnight.</b><br />
