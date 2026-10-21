@@ -11,6 +11,15 @@
 </p>
 
 <p align="center">
+  <a href="https://ghasaq-game.netlify.app/"><img src="https://img.shields.io/badge/%E2%96%B6%20Play%20Now-ghasaq--game.netlify.app-ff8a3d?style=for-the-badge" alt="Play Ghasaq Live" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/aymansalkhatib/ghasaq/actions/workflows/build.yml"><img src="https://github.com/aymansalkhatib/ghasaq/actions/workflows/build.yml/badge.svg" alt="Build Status" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+</p>
+
+<p align="center">
   <img src="docs/images/hero.jpg" alt="Ghasaq gameplay: defending the citadel courtyard in the afternoon" width="900" />
 </p>
 
@@ -66,7 +75,11 @@ On Windows you can also double-click `start.bat` (installs the packages on the f
 | `npm run build` | Production build in `dist/`, ready for any static host |
 | `npm run build:single` | The whole game as one self-contained file, `dist-single/ghasaq.html` (open it directly or send it as is) |
 | `npm run preview` | Serves the production build from `dist/` |
+| `npm test` | Runs the production build integrity check |
 
+### Standalone Single-File Game
+
+Run `npm run build:single` to bundle the entire game into **`dist-single/ghasaq.html`** (~1 MB). All scripts, styles, procedural textures, 3D models, and synthesized Web Audio sound effects are completely contained within this one file. You can double-click and play it offline in any modern browser without needing a web server.
 ## Controls
 
 | Keyboard and mouse | Action |

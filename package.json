@@ -23,7 +23,8 @@
     "dev:mobile": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "build:single": "node scripts/build-single.mjs"
+    "build:single": "node scripts/build-single.mjs",
+    "test": "vite build"
   },
   "dependencies": {
     "cannon-es": "0.20.0",
