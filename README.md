@@ -80,6 +80,7 @@ On Windows you can also double-click `start.bat` (installs the packages on the f
 ### Standalone Single-File Game
 
 Run `npm run build:single` to bundle the entire game into **`dist-single/ghasaq.html`** (~1 MB). All scripts, styles, procedural textures, 3D models, and synthesized Web Audio sound effects are completely contained within this one file. You can double-click and play it offline in any modern browser without needing a web server.
+
 ## Controls
 
 | Keyboard and mouse | Action |
@@ -159,3 +160,10 @@ Append `#autotest-<name>` to the address to jump straight into a ready-made scen
 - Plain JavaScript modules, no framework. Two runtime dependencies.
 - Web Audio synthesis for every sound, including the music.
 - The raiders are a fictional invading faction.
+
+## Credits and licenses
+
+- **Code**: Released under the [MIT License](LICENSE).
+- **Core libraries**: [Three.js](https://threejs.org) (MIT) and [cannon-es](https://pmndrs.github.io/cannon-es/) (MIT).
+- **Typography**: [Changa](https://fonts.google.com/specimen/Changa), [IBM Plex Sans Arabic](https://fonts.google.com/specimen/IBM+Plex+Sans+Arabic), and [Oswald](https://fonts.google.com/specimen/Oswald) are distributed under the [SIL Open Font License 1.1](https://openfontlicense.org/).
+- **Artwork and audio**: 100% procedurally generated in code — zero external image, model, or audio files.
